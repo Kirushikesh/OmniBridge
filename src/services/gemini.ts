@@ -1,30 +1,9 @@
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
+import { BridgeCategory, BridgeAction, BridgeResult } from "../types";
+export { BridgeCategory } from "../types";
+export type { BridgeAction, BridgeResult } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
-
-export enum BridgeCategory {
-  EMERGENCY = "EMERGENCY",
-  HEALTHCARE = "HEALTHCARE",
-  ENVIRONMENT = "ENVIRONMENT",
-  SOCIAL_AID = "SOCIAL_AID",
-  GENERAL = "GENERAL"
-}
-
-export interface BridgeAction {
-  title: string;
-  description: string;
-  type: "call" | "map" | "form" | "info";
-  payload: string;
-}
-
-export interface BridgeResult {
-  category: BridgeCategory;
-  urgency: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
-  summary: string;
-  structuredData: Record<string, any>;
-  actions: BridgeAction[];
-  reasoning: string;
-}
 
 const SYSTEM_INSTRUCTION = `
 You are OmniBridge, a universal intent engine designed for societal benefit. 
@@ -61,6 +40,10 @@ export async function processIntent(
   input: string,
   image?: { data: string; mimeType: string }
 ): Promise<BridgeResult> {
+  if (input && input.length > 2500) {
+    throw new Error("Input exceeds the maximum allowed length of 2,500 characters.");
+  }
+
   const model = "gemini-3-flash-preview";
   
   const parts: any[] = [{ text: input || "Analyze this input for societal benefit." }];
@@ -79,8 +62,13 @@ export async function processIntent(
     config: {
       systemInstruction: SYSTEM_INSTRUCTION,
       responseMimeType: "application/json",
+      tools: [{ googleSearch: {} }]
     }
   });
+
+  if (response.text === null || response.text === undefined) {
+    throw new Error("Failed to process intent. Please try again.");
+  }
 
   try {
     const result = JSON.parse(response.text || "{}");

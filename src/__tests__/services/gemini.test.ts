@@ -286,6 +286,13 @@ describe('processIntent - error handling', () => {
     vi.clearAllMocks();
   });
 
+  it('throws an error when input exceeds 2,500 characters', async () => {
+    const longInput = 'a'.repeat(2501);
+    await expect(processIntent(longInput)).rejects.toThrow(
+      'Input exceeds the maximum allowed length of 2,500 characters.'
+    );
+  });
+
   it('throws a descriptive error when JSON parsing fails', async () => {
     mockGenerateContent.mockResolvedValueOnce({ text: 'not valid json {{{' });
 
