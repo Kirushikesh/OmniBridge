@@ -1,0 +1,8 @@
+{
+  "name": "OmniBridge",
+  "description": "A universal bridge between human intent and complex systems, converting messy real-world inputs into structured, life-saving actions.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
