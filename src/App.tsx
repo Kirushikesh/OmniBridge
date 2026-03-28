@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { AlertCircle } from 'lucide-react';
 import { processIntent } from './services/gemini';
+import { saveIntent } from './services/firestoreService';
 import { BridgeResult } from './types';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -23,12 +24,16 @@ export default function App() {
     try {
       const data = await processIntent(input, image || undefined);
       setResult(data);
+      // Save submission and result to Firebase Firestore
+      await saveIntent(input, image, data);
     } catch (err: any) {
+      console.error("Submission failed:", err);
       setError(err.message);
     } finally {
       setIsProcessing(false);
     }
   };
+
 
   const reset = () => {
     setResult(null);

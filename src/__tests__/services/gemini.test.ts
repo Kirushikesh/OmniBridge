@@ -39,6 +39,7 @@ const validResult: BridgeResult = {
   category: BridgeCategory.EMERGENCY,
   urgency: 'HIGH',
   summary: 'Car accident at 5th and Main with smoke visible.',
+  detectedLanguage: 'en-US',
   structuredData: {
     location: '5th and Main',
     entities: ['car accident', 'smoke'],
@@ -54,6 +55,7 @@ const validResult: BridgeResult = {
   ],
   reasoning: 'Smoke at an accident scene indicates a potential fire risk.',
 };
+
 
 // ─── BridgeCategory Enum ─────────────────────────────────────────────────────
 
@@ -90,10 +92,12 @@ describe('processIntent - valid text input', () => {
       category: expect.any(String),
       urgency: expect.any(String),
       summary: expect.any(String),
+      detectedLanguage: expect.any(String),
       structuredData: expect.any(Object),
       actions: expect.any(Array),
       reasoning: expect.any(String),
     });
+
   });
 
   it('returns the correct category', async () => {

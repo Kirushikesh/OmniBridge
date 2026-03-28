@@ -11,13 +11,17 @@ export interface BridgeAction {
   description: string;
   type: "call" | "map" | "form" | "info";
   payload: string;
+  locationStr?: string;
+  coordinates?: { lat: number; lng: number };
 }
 
 export interface BridgeResult {
   category: BridgeCategory;
   urgency: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   summary: string;
+  detectedLanguage: string;
   structuredData: Record<string, any>;
   actions: BridgeAction[];
   reasoning: string;
 }
+

@@ -16,6 +16,9 @@ COPY . .
 ARG GEMINI_API_KEY=""
 ENV GEMINI_API_KEY=$GEMINI_API_KEY
 
+ARG VITE_GOOGLE_MAPS_API_KEY=""
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
+
 RUN npm run build
 
 # ─── Stage 2: Serve ───────────────────────────────────────────────────────────

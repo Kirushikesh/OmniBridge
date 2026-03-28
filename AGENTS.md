@@ -35,7 +35,8 @@ The OmniBridge Intent Engine acts as a **Reasoning Coordinator**, parsing messy,
 - **Core Logic**: Located in `src/services/gemini.ts`.
 - **Primary Tooling**: Uses Gemini-3-Flash's multimodal vision and text parsing capabilities, utilizing native **Google Search Grounding** to verify intelligence.
 - **Constraint**: Strict 2,500 character payload capacity limit to prevent prompt injection and context overflow.
-- **Goal**: Convert unstructured data into verified and structured entities.
+- **Goal**: Convert unstructured data into verified and structured entities with zero-shot **Multilingual Language Detection**.
+
 
 ### ⚖️ 2. The Categorizer (Intent Router)
 - **Role**: Evaluates the domain of the intent: `EMERGENCY`, `HEALTHCARE`, `ENVIRONMENT`, `SOCIAL_AID`, or `GENERAL`.
@@ -56,6 +57,13 @@ The OmniBridge Intent Engine acts as a **Reasoning Coordinator**, parsing messy,
 - **Core Logic**: Self-reflects on its analysis to provide a human-readable explanation of why a specific urgency or category was assigned.
 - **Goal**: Build trust through transparency.
 
+### 🗄️ 5. The Archivist (Persistence Agent)
+- **Role**: Ensures every analyzed intent is etched into permanent memory.
+- **Core Logic**: Located in `src/services/firestoreService.ts`.
+- **Primary Tooling**: Google Firebase Firestore.
+- **Goal**: Maintain a verifiable audit trail for responders and NGOs.
+
+
 ---
 
 ## 🧠 Data Architecture (For AI Agents)
@@ -69,10 +77,12 @@ interface BridgeResult {
   category: BridgeCategory;
   urgency: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   summary: string;
+  detectedLanguage: string;
   structuredData: Record<string, any>;
   actions: BridgeAction[];
   reasoning: string;
 }
+
 ```
 
 ### `BridgeAction`
@@ -117,9 +127,16 @@ gcloud artifacts repositories create omnibridge-repo \
 ```bash
 export PROJECT_ID="gen-lang-client-0910567027"
 export GEMINI_KEY=$(grep GEMINI_API_KEY .env | cut -d= -f2)
+export MAPS_KEY=$(grep VITE_GOOGLE_MAPS_API_KEY .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_API_KEY=$(grep VITE_FIREBASE_API_KEY .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_AUTH_DOMAIN=$(grep VITE_FIREBASE_AUTH_DOMAIN .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_PROJECT_ID=$(grep VITE_FIREBASE_PROJECT_ID .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_STORAGE_BUCKET=$(grep VITE_FIREBASE_STORAGE_BUCKET .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_SENDER_ID=$(grep VITE_FIREBASE_MESSAGING_SENDER_ID .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_APP_ID=$(grep VITE_FIREBASE_APP_ID .env | cut -d= -f2 | tr -d '"'\'''\'''\')
 
 # Build image in the cloud
-gcloud builds submit --config cloudbuild.yaml --substitutions="_GEMINI_API_KEY=$GEMINI_KEY"
+gcloud builds submit --config cloudbuild.yaml --substitutions="_GEMINI_API_KEY=$GEMINI_KEY,_VITE_GOOGLE_MAPS_API_KEY=$MAPS_KEY"
 
 # Deploy to Cloud Run
 gcloud run deploy omnibridge \
@@ -127,7 +144,14 @@ gcloud run deploy omnibridge \
   --region us-central1 \
   --allow-unauthenticated \
   --port 8080 \
-  --set-env-vars "GEMINI_API_KEY=$GEMINI_KEY"
+  --set-env-vars "GEMINI_API_KEY=$GEMINI_KEY,\
+VITE_FIREBASE_API_KEY=$FB_API_KEY,\
+VITE_FIREBASE_AUTH_DOMAIN=$FB_AUTH_DOMAIN,\
+VITE_FIREBASE_PROJECT_ID=$FB_PROJECT_ID,\
+VITE_FIREBASE_STORAGE_BUCKET=$FB_STORAGE_BUCKET,\
+VITE_FIREBASE_MESSAGING_SENDER_ID=$FB_SENDER_ID,\
+VITE_FIREBASE_APP_ID=$FB_APP_ID"
+
 ```
 
 ---
@@ -135,7 +159,12 @@ gcloud run deploy omnibridge \
 ## 🔮 Future Agentic Enhancements (TODOs)
 
 - [x] **Voice Dictation Agent**: Native integration of real-time Speech-to-Text (STT).
+- [x] **Multilingual Intake**: Zero-shot detection and localized response generation.
+- [x] **Geospatial Intent Routing**: Embedded interactive Google Maps dynamically visualize safe-zones and extraction points.
+- [x] **Persistent Intent Archivist**: Native Firestore integration for long-term intelligence storage.
+
 - [ ] **Voice Synthesis Agent**: Native integration of Text-to-Speech (TTS).
+
 - [ ] **Geofence Automator**: Autonomous retrieval of local NGO and medical facility APIs.
 - [ ] **Task Orchestrator**: Moving from suggestion to direct execution of multi-step workflows.
 

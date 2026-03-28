@@ -21,7 +21,12 @@
 - **Multimodal Intelligence**: Seamlessly processes text, images, and audio descriptions.
 - **Urgency-Aware Routing**: Autonomously prioritizes intents from `LOW` to `CRITICAL` for rapid response.
 - **Real-Time Grounding**: Utilizes native **Google Search** integrations to verify intelligence, keeping processing constrained to accurate, real-world data points.
+- **Multilingual Support**: Automatically detects the user's input language and provides 100% localized responses for all descriptive fields.
 - **Secure & Accessible by Default**: Ships with strict CSP rules, a robust 2,500-character input overflow constraint, logical focus-flow structures, and comprehensive reduced-motion fallbacks.
+- **Geospatial Intent Routing**: Embedded interactive Google Maps dynamically visualize safe-zones and extraction points.
+- **Persistent Intent Storage**: Securely archives all analyzed intents and results in **Google Cloud Firestore** for long-term NGO and responder review.
+
+
 - **Categorical Specialization**:
   - 🚨 **Emergency**: Disaster response and incident reporting.
   - 🏥 **Healthcare**: Symptom analysis and medical triage (AI-assisted).
@@ -44,7 +49,9 @@
 - **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
 - **Animations**: [Motion](https://motion.dev/)
 - **Intelligence**: [Google Gemini API](https://ai.google.dev/) (`gemini-3-flash-preview`)
+- **Persistence**: [Google Firebase Firestore](https://firebase.google.com/)
 - **Deployment**: [Google Cloud Run](https://cloud.google.com/run) | [Artifact Registry](https://cloud.google.com/artifact-registry)
+
 
 ---
 
@@ -62,10 +69,18 @@
    npm install
    ```
 2. **Configure Environment**:
-   Create a `.env` file and add your Gemini API Key:
+   Create a `.env` file and add your API Keys:
    ```env
-   GEMINI_API_KEY=your_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   VITE_GOOGLE_MAPS_API_KEY=your_google_maps_embed_key_here
+   VITE_FIREBASE_API_KEY=your_firebase_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_id
+   VITE_FIREBASE_APP_ID=your_app_id
    ```
+
 3. **Run Dev Server**:
    ```bash
    npm run dev
@@ -80,6 +95,9 @@
 ## 🏗 Future Roadmap
 
 - [x] **Voice Dictation**: Native STT (Speech-to-Text) via Web Speech API for hands-free intake.
+- [x] **Geospatial Routing**: Real-time iframe mapping of Google Maps Embed API.
+- [x] **Persistent Storage**: Automated Firestore archiving for every processed intent.
+
 - [ ] **Voice Synthesis**: TTS (Text-to-Speech) for hands-free interaction.
 - [ ] **Geofencing**: Automatic location-based task routing for local emergency services.
 - [ ] **Automated Actions**: Direct integration with service APIs (Emergency calling, medical form submission).
@@ -112,9 +130,16 @@ gcloud artifacts repositories create omnibridge-repo \
 ```bash
 export PROJECT_ID="gen-lang-client-0910567027"
 export GEMINI_KEY=$(grep GEMINI_API_KEY .env | cut -d= -f2)
+export MAPS_KEY=$(grep VITE_GOOGLE_MAPS_API_KEY .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_API_KEY=$(grep VITE_FIREBASE_API_KEY .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_AUTH_DOMAIN=$(grep VITE_FIREBASE_AUTH_DOMAIN .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_PROJECT_ID=$(grep VITE_FIREBASE_PROJECT_ID .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_STORAGE_BUCKET=$(grep VITE_FIREBASE_STORAGE_BUCKET .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_SENDER_ID=$(grep VITE_FIREBASE_MESSAGING_SENDER_ID .env | cut -d= -f2 | tr -d '"'\'''\'''\')
+export FB_APP_ID=$(grep VITE_FIREBASE_APP_ID .env | cut -d= -f2 | tr -d '"'\'''\'''\')
 
 # Build image in the cloud
-gcloud builds submit --config cloudbuild.yaml --substitutions="_GEMINI_API_KEY=$GEMINI_KEY"
+gcloud builds submit --config cloudbuild.yaml --substitutions="_GEMINI_API_KEY=$GEMINI_KEY,_VITE_GOOGLE_MAPS_API_KEY=$MAPS_KEY"
 
 # Deploy to Cloud Run
 gcloud run deploy omnibridge \
@@ -122,7 +147,14 @@ gcloud run deploy omnibridge \
   --region us-central1 \
   --allow-unauthenticated \
   --port 8080 \
-  --set-env-vars "GEMINI_API_KEY=$GEMINI_KEY"
+  --set-env-vars "GEMINI_API_KEY=$GEMINI_KEY,\
+VITE_FIREBASE_API_KEY=$FB_API_KEY,\
+VITE_FIREBASE_AUTH_DOMAIN=$FB_AUTH_DOMAIN,\
+VITE_FIREBASE_PROJECT_ID=$FB_PROJECT_ID,\
+VITE_FIREBASE_STORAGE_BUCKET=$FB_STORAGE_BUCKET,\
+VITE_FIREBASE_MESSAGING_SENDER_ID=$FB_SENDER_ID,\
+VITE_FIREBASE_APP_ID=$FB_APP_ID"
+
 ```
 
 ---

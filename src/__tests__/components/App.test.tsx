@@ -37,25 +37,12 @@ vi.mock('motion/react', () => ({
 const validBridgeResult: BridgeResult = {
   category: BridgeCategory.EMERGENCY,
   urgency: 'HIGH',
-  summary: 'Car accident at 5th and Main with visible smoke.',
-  structuredData: {
-    location: '5th and Main',
-    entities: ['car accident', 'smoke'],
-    details: 'Active scene with fire risk.',
-  },
+  summary: 'Test Emergency',
+  detectedLanguage: 'en',
+  structuredData: { location: 'Test Location', entities: ['Fire'], details: 'Test Details' },
   actions: [
-    {
-      title: 'Call Emergency Services',
-      description: 'Dial 911 immediately to report the accident.',
-      type: 'call',
-      payload: '911',
-    },
-    {
-      title: 'Navigate to Safe Zone',
-      description: 'Move away from the accident site.',
-      type: 'map',
-      payload: '5th and Main, Safe Zone',
-    },
+    { title: 'Call Emergency Services', description: 'Immediate assistance', type: 'call', payload: '911' },
+    { title: 'Navigate to Safe Zone', description: 'Move away from the accident site.', type: 'map', payload: '5th and Main, Safe Zone' },
   ],
   reasoning: 'Smoke indicates fire risk requiring immediate emergency response.',
 };

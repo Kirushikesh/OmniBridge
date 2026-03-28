@@ -5,7 +5,7 @@ import { Mic, Send, X, Camera, Loader2, AlertCircle, Activity, Leaf } from 'luci
 
 interface InputPanelProps {
   input: string;
-  setInput: (value: string) => void;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
   image: { data: string; mimeType: string } | null;
   setImage: (image: { data: string; mimeType: string } | null) => void;
   isProcessing: boolean;
@@ -24,7 +24,7 @@ export function InputPanel({ input, setInput, image, setImage, isProcessing, han
       return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Voice dictation is not supported in your browser.");
       return;

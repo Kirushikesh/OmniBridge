@@ -43,7 +43,13 @@ export function ResultView({ result, reset }: ResultViewProps) {
               <span className={`text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest ${URGENCY_COLORS[result.urgency]}`}>
                 {result.urgency} Priority
               </span>
+              {result.detectedLanguage && (
+                <span className="text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest bg-white/10 text-white/60">
+                  {result.detectedLanguage}
+                </span>
+              )}
             </div>
+
             <h2 className="text-2xl font-light">{result.summary}</h2>
           </div>
         </div>
@@ -110,9 +116,23 @@ export function ResultView({ result, reset }: ResultViewProps) {
               </div>
               <h4 className="text-sm font-bold mb-1 group-hover:text-accent transition-colors">{action.title}</h4>
               <p className="text-xs text-white/40 leading-snug">{action.description}</p>
-              <div className="mt-3 pt-3 border-t border-white/5 text-[10px] font-mono text-white/60 truncate">
-                {action.payload}
-              </div>
+              {action.type === 'map' ? (
+                <div className="mt-4 rounded-xl overflow-hidden border border-white/20 shadow-2xl bg-black/40 h-48 relative ring-1 ring-white/10">
+                  <iframe
+                    title={`Map for ${action.title}`}
+                    className="w-full h-full opacity-80 hover:opacity-100 transition-opacity duration-300"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}&q=${encodeURIComponent(action.payload)}`}
+                  ></iframe>
+                </div>
+              ) : (
+                <div className="mt-3 pt-3 border-t border-white/5 text-[10px] font-mono text-white/60 truncate">
+                  {action.payload}
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
