@@ -8,13 +8,34 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { InputPanel } from './components/InputPanel';
 import { ResultView } from './components/ResultView';
+import { LoginScreen } from './components/LoginScreen';
+import { useAuth } from './context/AuthContext';
 
 export default function App() {
+  const { user, loading } = useAuth();
+
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<BridgeResult | null>(null);
   const [image, setImage] = useState<{ data: string; mimeType: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // While OAuth resolves the persisted session, show a minimal loader
+  if (loading) {
+    return (
+      <div className="min-h-screen data-grid flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <span className="w-10 h-10 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+          <p className="text-[11px] font-mono text-white/30 uppercase tracking-widest">Authenticating…</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Unauthenticated — show login gate
+  if (!user) {
+    return <LoginScreen />;
+  }
 
   const handleProcess = async () => {
     if (!input && !image) return;
@@ -33,7 +54,6 @@ export default function App() {
       setIsProcessing(false);
     }
   };
-
 
   const reset = () => {
     setResult(null);

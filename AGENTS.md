@@ -63,6 +63,12 @@ The OmniBridge Intent Engine acts as a **Reasoning Coordinator**, parsing messy,
 - **Primary Tooling**: Google Firebase Firestore.
 - **Goal**: Maintain a verifiable audit trail for responders and NGOs.
 
+### 🔐 6. The Gatekeeper (Identity & Truth)
+- **Role**: Secures access to the system using real-world identities.
+- **Core Logic**: Located in `src/context/AuthContext.tsx` and `src/components/LoginScreen.tsx`.
+- **Primary Tooling**: Google OAuth 2.0 (`@react-oauth/google`).
+- **Goal**: Validate users securely without heavy backend auth logic.
+
 
 ---
 
@@ -162,6 +168,7 @@ VITE_FIREBASE_APP_ID=$FB_APP_ID"
 - [x] **Multilingual Intake**: Zero-shot detection and localized response generation.
 - [x] **Geospatial Intent Routing**: Embedded interactive Google Maps dynamically visualize safe-zones and extraction points.
 - [x] **Persistent Intent Archivist**: Native Firestore integration for long-term intelligence storage.
+- [x] **Identity Verification**: Integrated Google OAuth 2.0 for user authentication and session management.
 
 - [ ] **Voice Synthesis Agent**: Native integration of Text-to-Speech (TTS).
 

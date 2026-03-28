@@ -3,7 +3,10 @@ import { BridgeCategory, BridgeAction, BridgeResult } from "../types";
 export { BridgeCategory } from "../types";
 export type { BridgeAction, BridgeResult } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const ai = new GoogleGenAI({ 
+  apiKey: process.env.GEMINI_API_KEY || "test_api_key",
+  vertexai: true
+});
 
 const SYSTEM_INSTRUCTION = `
 You are OmniBridge, a universal intent engine designed for societal benefit. 

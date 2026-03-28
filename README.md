@@ -25,6 +25,19 @@
 - **Secure & Accessible by Default**: Ships with strict CSP rules, a robust 2,500-character input overflow constraint, logical focus-flow structures, and comprehensive reduced-motion fallbacks.
 - **Geospatial Intent Routing**: Embedded interactive Google Maps dynamically visualize safe-zones and extraction points.
 - **Persistent Intent Storage**: Securely archives all analyzed intents and results in **Google Cloud Firestore** for long-term NGO and responder review.
+- **Identity & Access**: Secured directly via **Google OAuth 2.0** for seamless, trusted authentication.
+
+### 🌐 Google Services Ecosystem
+
+OmniBridge is heavily integrated with the Google Cloud and Google Workspace platforms to ensure enterprise-grade reliability, security, and intelligence:
+
+1. **Google Gemini API**: Our core reasoning engine. Uses `gemini-3-flash-preview` for multimodal reasoning and zero-shot categorization.
+2. **Google OAuth 2.0 (`@react-oauth/google`)**: Powers our robust, secure, and seamless authentication layer without needing custom backend auth logic.
+3. **Google Search Grounding**: Integrated directly into Gemini's toolset to ensure the AI's responses are verified against live, real-world data to prevent hallucinations.
+4. **Google Maps Embed API**: Used to dynamically render geospatial coordinates and safe-zone routes directly in the user interface.
+5. **Google Cloud Firestore**: Provides a persistent, schema-less NoSQL database to store analyzed intents for future audits and responder review.
+6. **Google Cloud Run**: Serverless container execution environment that hosts our production deployment with auto-scaling capabilities.
+7. **Google Cloud Build & Artifact Registry**: Our CI/CD pipeline and container image storage for zero-downtime deployments.
 
 
 - **Categorical Specialization**:
@@ -50,6 +63,7 @@
 - **Animations**: [Motion](https://motion.dev/)
 - **Intelligence**: [Google Gemini API](https://ai.google.dev/) (`gemini-3-flash-preview`)
 - **Persistence**: [Google Firebase Firestore](https://firebase.google.com/)
+- **Authentication**: [Google OAuth 2.0](https://developers.google.com/identity/oauth2/web/guides/overview)
 - **Deployment**: [Google Cloud Run](https://cloud.google.com/run) | [Artifact Registry](https://cloud.google.com/artifact-registry)
 
 
@@ -73,6 +87,7 @@
    ```env
    GEMINI_API_KEY=your_gemini_api_key_here
    VITE_GOOGLE_MAPS_API_KEY=your_google_maps_embed_key_here
+   VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id_here
    VITE_FIREBASE_API_KEY=your_firebase_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
    VITE_FIREBASE_PROJECT_ID=your_project_id
